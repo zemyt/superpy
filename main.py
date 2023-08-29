@@ -2,16 +2,12 @@
 from argparse import *
 import csv
 from datetime import date
-from functions import buy_product, sell_product
+from functions import *
 
 # Do not change these lines.
 __winc_id__ = "a2bc36ea784242e4989deb157d527ba0"
 __human_name__ = "superpy"
-
-
-# # Your code below this line.
-# def main():
-#     pass
+current_day_file = "date.json"
 
 # Parser
 parser = ArgumentParser(description="SuperpyMarket Management Tool")
@@ -19,63 +15,108 @@ subparsers = parser.add_subparsers(dest="command")
 
 # Buy parser
 buy_parser = subparsers.add_parser("buy", help="Buy product")
-
-buy_parser.add_argument("--product-name", type=str, help="Name of the product you buy")
-buy_parser.add_argument("--price", type=float, help="Price of the product you buy")
-buy_parser.add_argument("--expiration-date", help="Expiration date of the product you buy")
+buy_parser.add_argument("-n", "--product-name", type=str, help="Name of the product you buy")
+buy_parser.add_argument("-p", "--price", type=float, help="Price of the product you buy")
+buy_parser.add_argument("-exp", "--expiration-date", type=validate_expiration_date, help="Expiration date of the product you buy (format: 'YYYY-MM-DD')")
 
 # Sell parser
 sell_parser = subparsers.add_parser("sell", help="Sell product")
-
-sell_parser.add_argument("--product-name", type=str, help="Name of the product you sell")
-sell_parser.add_argument("--price", type=float, help="Price of the product you sell")
+sell_parser.add_argument("-n", "--product-name", type=str, help="Name of the product you sell")
+sell_parser.add_argument("-p", "--price", type=float, help="Price of the product you sell")
 
 # Report parser
 report_parser = subparsers.add_parser("report", help="Generate report [inventory, revenue, profit]")
-
 report_parser.add_argument("report_type", type=str, help="Specify type of report [inventory, revenue, profit]")
-report_parser.add_argument("report_time", type=str, help="Specify the time you want the report of [--now --today --tomorrow --yesterday --date] ")
+report_parser.add_argument("--now", action="store_true", help="Show inventory for today")
+report_parser.add_argument("--today", action="store_true", help="Show inventory for today")
+report_parser.add_argument("--yesterday", action="store_true", help="Show inventory for yesterday")
+report_parser.add_argument("--date", type=str, help="Show inventory for specific date (format: 'YYYY-MM-DD')")
 
 # Advance time parser
-advance_time_parser = subparsers.add_parser("advance-time", help="Advances time")
+advance_time_parser = subparsers.add_parser("advance-time", help="Travel through time, and adjust the time")
+advance_time_parser.add_argument("-adv", "--advance", type=int, help="Advances time by amount of days [-1,0,1,2,etc]")
 
-advance_time_parser.add_argument("advance_by_day", type=int, help="Advance time, 1==1day")
+# Set current time parser
+current_time_parser = subparsers.add_parser("set-current-time", help="Set time to current time")
 
 # Parse
 args = parser.parse_args()
 
 if args.command == "buy":
-    # buy_product(args.product_name, args.price, args.expiration_date)
-    print(args.product_name)
-    print(args.price)
-    print(args.expiration_date)
+    buy_product(args.product_name, args.price, args.expiration_date)
 
 if args.command == "sell":
-    # sell_product(args.product_name, args.price)
-    print(args.product_name)
-    print(args.price)
+    sell_product(args.product_name, args.price)
     
-
 if args.command == "report":
-    if args.report_type.lower() == "inventory" or args.report_type == "revenue" or args.report_type == "profit":
-        if args.report_type == "inventory":
-            print("ok")
-            # report_inventory()
-        if args.report_type == "revenue":
-            print("ok")
-            # report_revenue()
-        if args.report_type == "profit":
-            print("ok")
-            # report_profit()
-
-    else:
-        print(args.report_type.lower())
-        print(f"Incorrect report type. Please select: inventory, revenue or profit.")
         
+        if args.report_type.lower() == "inventory":
+            current_date = get_current_day(current_day_file)
+            if args.now or args.today:
+                report_inventory(current_date)
+            elif args.yesterday:
+                yesterday = current_date - timedelta(days=1)
+                report_inventory(yesterday)
+            elif args.date:
+                try:
+                    specific_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+                    report_inventory(specific_date)
+                except ValueError:
+                    print("Incorrect date format. Use format: 'YYYY-MM-DD'.")
+            else:
+                report_inventory(current_date)
 
+        if args.report_type == "revenue":
+            current_date = get_current_day(current_day_file)
+            if args.now or args.today:
+                report_revenue(current_date)
+            elif args.yesterday:
+                yesterday = current_date - timedelta(days=1)
+                report_revenue(yesterday)
+            elif args.date:
+                try:
+                    spef_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+                    report_revenue(spef_date)
+                except ValueError:
+                    print("Incorrect date format. Use format: 'YYYY-MM-DD'. TEST")
+            else:
+                report_revenue(current_date)
+            
+
+
+
+
+        if args.report_type == "profit":
+            current_date = get_current_day(current_day_file)
+            if args.now or args.today:
+                report_profit(current_date)
+            elif args.yesterday:
+                yesterday = current_date - timedelta(days=1)
+                report_profit(yesterday)
+            elif args.date:
+                try:
+                    spef_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+                    report_profit(spef_date)
+                except ValueError:
+                    print("Incorrect date format. Use format: 'YYYY-MM-DD'. TEST")
+            else:
+                report_profit(current_date)
+
+
+
+        
 if args.command == "advance-time":
-    print(args.advance_by_day)
+    if args.advance:
+        current_date = get_current_day(current_day_file)
+        new_date = current_date + timedelta(days=args.advance)
+        write_current_time(current_day_file, new_date)
+        print(f"Advance time by {args.advance} days, setting date to: {new_date}")
 
+
+if args.command == "set-current-time":
+    current_date = date.today()
+    write_current_time(current_day_file, current_date)
+    print(f"Setting date to the current date: {current_date}")
 
 
 # if __name__ == "__main__":
