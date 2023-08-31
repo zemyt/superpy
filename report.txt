@@ -1,0 +1,27 @@
+For this requirement:
+    Two other additional non-trivial features of your choice, I've used:
+        • The use of an external module Rich to improve the application.
+        • The ability to import/export reports from/to formats other than CSV (in addition to CSV). (JSON)
+
+Please include a short, 300-word report that highlights three technical elements of your implementation that you find notable.
+Explain what problem they solve and why you chose to implement them in this way.
+
+Inventory Management:
+    The first technical element is the dynamic inventory management, achieved through the report_inventory function. 
+    This function calculates the inventory count of products based on both purchase and sales records, considering various date ranges.
+    This approach solves the challenge of maintaining an accurate inventory count by considering products bought and sold over time. 
+    By adapting to varying conditions such as dates and product attributes, this dynamic inventory management ensures that users receive an up-to-date representation of their stock.
+
+Identification of Product IDs:
+    The second technical element is the solution to utilize both used_ids and new_ids sets to manage product IDs effectively. 
+    This approach solves the problem of generating unique IDs for purchased items while avoiding conflicts and ensuring consistency. 
+    By maintaining a record of used IDs and generating new ones as needed, the application prevents the accidental reuse of IDs.
+    This implementation choice guarantees data integrity and mitigates potential errors in the identification process.
+
+"Time Travel" and Date Handling:
+    The third technical element is the time travel functionality achieved through the "advance-time" and "set-current-time" commands.
+    This feature addresses the challenge of simulating changes in time for testing or retrospective analysis.
+    The "advance-time" command lets users travel forward or backward in time, adjusting the current date accordingly.
+    This capability aids in testing scenarios involving future or past dates without altering the system's actual date.
+    The "set-current-time" command lets users reset the system's date to the current date, useful for returning to real-time operations after the "time travel".
+    This approach enhances the versatility of the application, enabling to explore various scenarios without affecting the actual timeline.
