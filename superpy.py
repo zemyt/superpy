@@ -1,12 +1,10 @@
-# Imports
 from argparse import *
-import csv
 from datetime import date
 from functions import *
 
-# Do not change these lines.
 __winc_id__ = "a2bc36ea784242e4989deb157d527ba0"
 __human_name__ = "superpy"
+
 current_day_file = "date.json"
 
 # Parser
@@ -82,10 +80,6 @@ if args.command == "report":
             else:
                 report_revenue(current_date)
             
-
-
-
-
         if args.report_type == "profit":
             current_date = get_current_day(current_day_file)
             if args.now or args.today:
@@ -103,8 +97,6 @@ if args.command == "report":
                 report_profit(current_date)
 
 
-
-        
 if args.command == "advance-time":
     if args.advance:
         current_date = get_current_day(current_day_file)
@@ -112,12 +104,7 @@ if args.command == "advance-time":
         write_current_time(current_day_file, new_date)
         print(f"Advance time by {args.advance} days, setting date to: {new_date}")
 
-
 if args.command == "set-current-time":
     current_date = date.today()
     write_current_time(current_day_file, current_date)
     print(f"Setting date to the current date: {current_date}")
-
-
-# if __name__ == "__main__":
-#     main()
