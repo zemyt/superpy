@@ -40,7 +40,6 @@ Table of Contents
 
             $ python superpy.py
 
-
 3. Basic Usage
     3.1 Buying Products
         To add products to your inventory, use the following command:
@@ -59,7 +58,6 @@ Table of Contents
         Example:
 
             $ python superpy.py sell -n Apple -p 1.0
-
 
     3.3 Generating Reports
         Generate reports on inventory, revenue, and profit using the following command:
