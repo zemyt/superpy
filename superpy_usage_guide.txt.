@@ -73,7 +73,6 @@ Table of Contents
             $ python superpy.py report profit --yesterday
 
 4. Advanced Usage
-
     4.1 Advancing Time
         Travel through time and adjust the date using the following command:
 
