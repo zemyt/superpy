@@ -12,7 +12,6 @@ Table of Contents
         4.2 Setting Current Time
     5. Troubleshooting
 
-
 1. Introduction
     The SuperpyMarket Management Tool is a command-line application aimed at helping store managers efficiently manage their inventory, sales, and reports. It offers features like buying and selling products, generating reports on inventory, revenue, and profit, and even time manipulation for testing purposes.
 
