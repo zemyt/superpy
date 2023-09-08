@@ -14,10 +14,10 @@ subparsers = parser.add_subparsers(dest="command")
 # Buy parser
 buy_parser = subparsers.add_parser("buy", help="Buy product")
 buy_parser.add_argument(
-    "-n", "--product-name", type=str, help="Name of the product you buy"
+    "-n", "--product-name", required=True, type=str, help="Name of the product you buy"
 )
 buy_parser.add_argument(
-    "-p", "--price", type=float, help="Price of the product you buy"
+    "-p", "--price", required=True, type=float, help="Price of the product you buy"
 )
 buy_parser.add_argument(
     "-exp",
@@ -29,10 +29,10 @@ buy_parser.add_argument(
 # Sell parser
 sell_parser = subparsers.add_parser("sell", help="Sell product")
 sell_parser.add_argument(
-    "-n", "--product-name", type=str, help="Name of the product you sell"
+    "-n", "--product-name", required=True, type=str, help="Name of the product you sell"
 )
 sell_parser.add_argument(
-    "-p", "--price", type=float, help="Price of the product you sell"
+    "-p", "--price", required=True, type=float, help="Price of the product you sell"
 )
 
 # Report parser
@@ -144,12 +144,12 @@ if args.command == "advance-time":
         current_date = get_current_day(current_day_file)
         new_date = current_date + timedelta(days=args.advance)
         write_current_time(current_day_file, new_date)
-        print(f"Advance time by {args.advance} days, setting date to: {new_date}")
+        print(f"Advance time by {args.advance} days, setting date to: {new_date}.")
 
 if args.command == "set-current-time":
     current_date = date.today()
     write_current_time(current_day_file, current_date)
-    print(f"Setting date to the current date: {current_date}")
+    print(f"Setting date to the current date: {current_date}.")
 
 if args.command == "set-date":
     if args.date:
