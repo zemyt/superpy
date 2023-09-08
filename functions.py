@@ -5,29 +5,37 @@ import argparse
 from rich.console import Console
 from rich.table import Table
 import json
+import os
 
 current_day_file = "date.json"
 
 
-def buy_product(product_name, buy_price, expiration_date):
+def buy_product(product_name, buy_price, amount, expiration_date):
     buy_date = get_current_day(current_day_file).strftime("%Y-%m-%d")
-    id = str(get_next_purchace_id())
-    data = [id, product_name, buy_date, buy_price, expiration_date]
     field_names = ["id", "product_name", "buy_date", "buy_price", "expiration_date"]
-
+    if amount == 0:
+        print("Can't buy 0 products.")
+        return
     try:
         with open("bought.csv", "a") as file:
             writer = csv.writer(file)
             if file.tell() == 0:  # Adds fieldnames if file is empty
                 writer.writerow(field_names)
-            writer.writerow(data)
-            print(f"OK: Bought {product_name} for €{buy_price:.2f}.")
+            for a in range(amount):
+                id = str(get_next_purchace_id())
+                data = [id, product_name, buy_date, buy_price, expiration_date]
+                writer.writerow(data)
+
+            if amount < 2:
+                print(f"OK: Bought {product_name} for €{buy_price:.2f}.")
+            else:
+                print(f"OK: Bought {amount} {product_name}s for €{buy_price:.2f} each.")
 
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
-def sell_product(product_name, sell_price):
+def sell_product(product_name, sell_price, amount):
     sell_date = get_current_day(current_day_file).strftime("%Y-%m-%d")
     field_names = [
         "id",
@@ -38,41 +46,103 @@ def sell_product(product_name, sell_price):
         "sell_price",
         "expiration_date",
     ]
-    sold_products = set()
 
-    try:
-        with open("bought.csv", "r+") as file:
-            lines = file.readlines()
-            file.seek(0)
+    to_sell = []
+    expired_count = 0
+    line_num_to_remove = []
 
-            for line in lines:
-                bought_data = line.split(",")
-                if product_name in line and product_name not in sold_products:
-                    data = [
-                        bought_data[0],
-                        product_name,
-                        bought_data[2],
-                        sell_date,
-                        bought_data[3],
-                        sell_price,
-                        bought_data[4].strip(),
-                    ]
-                    with open("sold.csv", "a") as sold_file:
-                        writer = csv.writer(sold_file)
-                        if sold_file.tell() == 0:  # Adds fieldnames if file is empty
-                            writer.writerow(field_names)
-                        writer.writerow(data)
-                        print(f"OK: Sold {product_name} for €{sell_price:.2f}")
-                    sold_products.add(product_name)
-                else:
-                    file.write(line)
-            file.truncate()
+    if amount == 0:
+        print("Need at least one product to sell.")
+        return
 
-        if product_name not in sold_products:
-            print(f"ERROR: {product_name} not in stock.")
+    with open("bought.csv", "r+") as file:
+        lines = file.readlines()
+        file.seek(0)
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        for i, line in enumerate(lines):
+            bought_data = line.split(",")
+            if bought_data[0] == "id":
+                continue
+            if product_name in bought_data[1]:
+                # if it has no exp date
+                if len(bought_data) == 5 and str(bought_data[4].strip()) == "":
+                    to_sell.append(
+                        [
+                            bought_data[0],
+                            product_name,
+                            bought_data[2],
+                            sell_date,
+                            bought_data[3],
+                            sell_price,
+                        ]
+                    )
+
+                    line_num_to_remove.append(i)
+                    if len(to_sell) >= amount:
+                        break
+                    continue
+
+                # if it does have a exp date
+                if len(bought_data) == 5 and bought_data[4].strip():
+                    if bought_data[4] < sell_date:
+                        expired_count += 1
+                        continue
+                    else:
+                        to_sell.append(
+                            [
+                                bought_data[0],
+                                product_name,
+                                bought_data[2],
+                                sell_date,
+                                bought_data[3],
+                                sell_price,
+                                bought_data[4].strip(),
+                            ]
+                        )
+                        line_num_to_remove.append(i)
+                        if len(to_sell) >= amount:
+                            print(to_sell)
+                            print(
+                                f"There are {expired_count} {product_name}(s) in the inventory that have expired, and are unable to be sold."
+                            )
+                            break
+
+        for item in to_sell:
+            if product_name not in item[1]:
+                print(f"ERROR: [{product_name}] not in stock.")
+                if expired_count > 0:
+                    print(
+                        f"There are {expired_count} {product_name}(s) in the inventory that have expired, and are unable to be sold."
+                    )
+                return
+
+        if len(to_sell) < amount:
+            print(
+                f"ERROR: Not enough products of [{product_name}] to sell, {len(to_sell)} remaining in stock."
+            )
+            if expired_count > 0:
+                print(
+                    f"There are {expired_count} {product_name}(s) in the inventory that have expired, and are unable to be sold."
+                )
+            return
+
+        if len(to_sell) == amount:
+            with open("sold.csv", "a") as sold_file:
+                writer = csv.writer(sold_file)
+                if sold_file.tell() == 0:
+                    writer.writerow(field_names)
+                for item in to_sell:
+                    writer.writerow(item)
+                print(
+                    f"OK: Sold {amount} {product_name}(s) for €{sell_price:.2f} each."
+                )
+
+        with open("bought.csv", "r") as source_file, open("temp.csv", "w") as temp_file:
+            source_lines = source_file.readlines()
+            for i, line in enumerate(source_lines):
+                if i not in line_num_to_remove:
+                    temp_file.write(line)
+        os.replace("temp.csv", "bought.csv")
 
 
 # Report functions
@@ -173,7 +243,6 @@ def report_inventory(date):
             ):
                 inventory_list.append([sold_data[1], 1, sold_data[4], sold_data[-1]])
 
-    print(inventory_list)
     for item in inventory_list:
         inventory_table.add_row(item[0], str(item[1]), item[2], item[3])
     console.print(inventory_table)
