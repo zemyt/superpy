@@ -101,11 +101,15 @@ def sell_product(product_name, sell_price, amount):
                         )
                         line_num_to_remove.append(i)
                         if len(to_sell) >= amount:
-                            print(to_sell)
-                            print(
-                                f"There are {expired_count} {product_name}(s) in the inventory that have expired, and are unable to be sold."
-                            )
+                            if expired_count > 0:
+                                print(
+                                    f"There are {expired_count} {product_name}(s) in the inventory that have expired, and are unable to be sold."
+                                )
                             break
+
+        if len(to_sell) == 0:
+            print(f"ERROR: [{product_name}] not in stock.")
+            return
 
         for item in to_sell:
             if product_name not in item[1]:
