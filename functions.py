@@ -96,7 +96,7 @@ def report_inventory(date):
 
         for line in bought_lines:
             bought_data = line.strip().split(",")
-            if len(bought_data) < 6:
+            if len(bought_data) < 4:
                 continue
             if bought_data[0] == "id":
                 continue  # skip when we iterate over the fieldnames
@@ -173,6 +173,7 @@ def report_inventory(date):
             ):
                 inventory_list.append([sold_data[1], 1, sold_data[4], sold_data[-1]])
 
+    print(inventory_list)
     for item in inventory_list:
         inventory_table.add_row(item[0], str(item[1]), item[2], item[3])
     console.print(inventory_table)
