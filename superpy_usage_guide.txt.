@@ -10,6 +10,7 @@ Table of Contents
     4. Advanced Usage
         4.1 Advancing Time
         4.2 Setting Current Time
+        4.3 Setting Date
     5. Troubleshooting
 
 1. Introduction
@@ -84,6 +85,16 @@ Table of Contents
         Set the tool's time to the current date using the following command:
 
             $ python superpy.py set-current-time
+
+    4.3 Setting Date
+        Set the tool's date to the requested date using the following command:
+
+            $ python superpy.py set-date [-d, --date]
+
+            Example:
+
+                $ python superpy.py set-date --date 2040-12-12
+                # Sets the date to 2040-12-12
 
 5. Troubleshooting
     If you encounter any issues while using the tool, try the following:

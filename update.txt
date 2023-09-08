@@ -1,0 +1,8 @@
+Usage guide staat gewoon op GitHub, daar is denk ik overheen gekeken.
+
+De errors qua reports hadden te maken met het manueel veranderen (lege lines) van de csv files
+Was ik zelf niet tegenaan gelopen, maar is verholpen door een extra check toe te passen, zelfde geldt voor de ID's
+
+Set_date toegevoegd
+
+amount bijhouden
