@@ -20,6 +20,9 @@ buy_parser.add_argument(
     "-p", "--price", required=True, type=float, help="Price of the product you buy"
 )
 buy_parser.add_argument(
+    "-a", "--amount", required=True, type=int, help="Amount of the product you buy"
+)
+buy_parser.add_argument(
     "-exp",
     "--expiration-date",
     type=validate_date,
@@ -33,6 +36,9 @@ sell_parser.add_argument(
 )
 sell_parser.add_argument(
     "-p", "--price", required=True, type=float, help="Price of the product you sell"
+)
+sell_parser.add_argument(
+    "-a", "--amount", required=True, type=int, help="Amount of the product you sell"
 )
 
 # Report parser
@@ -84,10 +90,10 @@ set_date_parser.add_argument(
 args = parser.parse_args()
 
 if args.command == "buy":
-    buy_product(args.product_name, args.price, args.expiration_date)
+    buy_product(args.product_name, args.price, args.amount, args.expiration_date)
 
 if args.command == "sell":
-    sell_product(args.product_name, args.price)
+    sell_product(args.product_name, args.price, args.amount)
 
 if args.command == "report":
     if args.report_type.lower() == "inventory":
