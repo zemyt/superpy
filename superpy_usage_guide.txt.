@@ -32,7 +32,7 @@ Table of Contents
 
             $ pip install rich
 
-        The other modules are part of the standard Python library.
+        The other modules are part of the standard Python library and do not need to be installed manually.
 
     4. Run the application:
         After setting up the necessary files and installing the required dependency, you're ready to run the application.
@@ -46,20 +46,22 @@ Table of Contents
     3.1 Buying Products
         To add products to your inventory, use the following command:
 
-            $ python superpy.py buy -n [product_name] -p [price] -exp [expiration_date]
+            $ python superpy.py buy -n [product_name] -p [price] -a [amount] -exp [expiration_date]
 
         Example:
 
-            $ python superpy.py buy -n Apple -p 0.5 -exp 2023-09-30
+            $ python superpy.py buy -n Apple -p 0.5 -a 10 -exp 2023-09-30
+            # Buys 10 apples for €0.50 with an expiration date of 2023-09-30
 
     3.2 Selling Products
         To sell products from your inventory, use the following command:
 
-            $ python superpy.py sell -n [product_name] -p [price]
+            $ python superpy.py sell -n [product_name] -p [price] -a [amount]
 
         Example:
 
-            $ python superpy.py sell -n Apple -p 1.0
+            $ python superpy.py sell -n Apple -p 1.0 -a 10
+            # Sells 10 apples for €1.00
 
     3.3 Generating Reports
         Generate reports on inventory, revenue, and profit using the following command:
