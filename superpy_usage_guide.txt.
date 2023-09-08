@@ -32,6 +32,8 @@ Table of Contents
 
             $ pip install rich
 
+        The other modules are part of the standard Python library.
+
     4. Run the application:
         After setting up the necessary files and installing the required dependency, you're ready to run the application.
 
