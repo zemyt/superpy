@@ -16,6 +16,13 @@ def buy_product(product_name, buy_price, amount, expiration_date):
     if amount == 0:
         print("Can't buy 0 products.")
         return
+
+    # Checks if product to buy is already expired
+    if expiration_date < get_current_day(current_day_file).strftime("%Y-%m-%d"):
+        print(get_current_day(current_day_file).strftime("%Y-%m-%d"))
+        print("Error: Can't buy expired products.")
+        return
+
     try:
         with open("bought.csv", "a", newline="") as file:
             writer = csv.writer(file)
