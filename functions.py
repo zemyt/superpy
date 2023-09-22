@@ -63,8 +63,11 @@ def sell_product(product_name, sell_price, amount):
             bought_data = line.split(",")
             if bought_data[0] == "id":
                 continue
+            if len(bought_data) < 4:
+                continue
+
             if product_name in bought_data[1]:
-                # if it has no exp date
+                # Checks if product has an expiration date.
                 if len(bought_data) == 5 and str(bought_data[4].strip()) == "":
                     to_sell.append(
                         [
@@ -78,11 +81,11 @@ def sell_product(product_name, sell_price, amount):
                     )
 
                     line_num_to_remove.append(i)
-                    if len(to_sell) >= amount:
+                    if len(to_sell) >= amount:  # Breaks if the sell amount is reached
                         break
                     continue
 
-                # if it does have a exp date
+                # Then when it does have an expiration date, checks if the product is expired.
                 if len(bought_data) == 5 and bought_data[4].strip():
                     if bought_data[4] < sell_date:
                         expired_count += 1
