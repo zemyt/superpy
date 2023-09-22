@@ -156,7 +156,10 @@ def sell_product(product_name, sell_price, amount):
             for i, line in enumerate(source_lines):
                 if i not in line_num_to_remove:
                     temp_file.write(line)
-        os.replace("temp.csv", "bought.csv")
+        try:
+            os.replace("temp.csv", "bought.csv")
+        except OSError as e:
+            print(f"Error replacing file: {e}")
 
 
 # Report functions
