@@ -17,7 +17,7 @@ def buy_product(product_name, buy_price, amount, expiration_date):
         print("Can't buy 0 products.")
         return
     try:
-        with open("bought.csv", "a") as file:
+        with open("bought.csv", "a", newline="") as file:
             writer = csv.writer(file)
             if file.tell() == 0:  # Adds fieldnames if file is empty
                 writer.writerow(field_names)
